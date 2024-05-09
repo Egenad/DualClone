@@ -7,11 +7,14 @@
 
 import SpriteKit
 import GameplayKit
+import CoreMotion
 
 class GameScene: SKScene {
     
     //private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
+    private var spaceship : Spaceship!
+    let motionManager = CMMotionManager()
     
     override func didMove(to view: SKView) {
         
@@ -22,12 +25,14 @@ class GameScene: SKScene {
             label.run(SKAction.fadeIn(withDuration: 2.0))
         }*/
         
-        let spaceship = Spaceship()
+        spaceship = Spaceship()
         spaceship.position = CGPoint(x: 0, y: 0)
         addChild(spaceship)
         
+        startGyroMotion()
+        
         // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
+        let w = (self.size.width + self.size.height) * 0.01
         self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
         
         if let spinnyNode = self.spinnyNode {
@@ -37,6 +42,24 @@ class GameScene: SKScene {
             spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
                                               SKAction.fadeOut(withDuration: 0.5),
                                               SKAction.removeFromParent()]))
+        }
+    }
+    
+    private func startGyroMotion(){
+        
+        motionManager.startGyroUpdates()
+        
+        motionManager.startDeviceMotionUpdates(to: OperationQueue.main) { (motion, error) in
+            guard let motion = motion else { return }
+            let rotationRate = motion.rotationRate
+            
+            let speed: CGFloat = 5.0
+
+            self.spaceship.position.x += CGFloat(rotationRate.x) * speed
+            self.spaceship.position.y += CGFloat(rotationRate.y) * speed
+            
+            self.spaceship.position.x = max(min(self.spaceship.position.x, self.size.width / 2), -self.size.width / 2)
+            self.spaceship.position.y = max(min(self.spaceship.position.y, self.size.height / 2), -self.size.height / 2)
         }
     }
     
@@ -75,7 +98,6 @@ class GameScene: SKScene {
         //guard let touch = touches.first else { return }
         //let location = touch.location(in: self)
         
-        let spaceship = childNode(withName: "spaceship") as! Spaceship
         let bullet = spaceship.fireBullet()
         addChild(bullet)
     }
