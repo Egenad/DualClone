@@ -17,6 +17,9 @@
 		CBDE14FC2BEBC822005AB1DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBDE14FA2BEBC822005AB1DF /* LaunchScreen.storyboard */; };
 		CBDE15032BEBC9F6005AB1DF /* Spaceship.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15022BEBC9F6005AB1DF /* Spaceship.swift */; };
 		CBDE15072BECE4E3005AB1DF /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBDE15062BECE4E3005AB1DF /* CoreMotion.framework */; };
+		CBDE15102BED0FAD005AB1DF /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE150F2BED0FAD005AB1DF /* WelcomeController.swift */; };
+		CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15122BF25103005AB1DF /* ConnectionManager.swift */; };
+		CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15152BF27C51005AB1DF /* Bullet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,8 +33,11 @@
 		CBDE14F82BEBC822005AB1DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CBDE14FB2BEBC822005AB1DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CBDE15022BEBC9F6005AB1DF /* Spaceship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaceship.swift; sourceTree = "<group>"; };
-		CBDE15042BECE2C0005AB1DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		CBDE15042BECE2C0005AB1DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CBDE15062BECE4E3005AB1DF /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		CBDE150F2BED0FAD005AB1DF /* WelcomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeController.swift; sourceTree = "<group>"; };
+		CBDE15122BF25103005AB1DF /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
+		CBDE15152BF27C51005AB1DF /* Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +57,6 @@
 			children = (
 				CBDE14EA2BEBC820005AB1DF /* DualClone */,
 				CBDE14E92BEBC820005AB1DF /* Products */,
-				CBDE15052BECE4E2005AB1DF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -66,16 +71,17 @@
 		CBDE14EA2BEBC820005AB1DF /* DualClone */ = {
 			isa = PBXGroup;
 			children = (
-				CBDE15042BECE2C0005AB1DF /* Info.plist */,
 				CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */,
-				CBDE14ED2BEBC820005AB1DF /* GameScene.sks */,
+				CBDE15112BED0FB5005AB1DF /* Controllers */,
+				CBDE15142BF25333005AB1DF /* Managers */,
+				CBDE150A2BED0D86005AB1DF /* Scenes */,
 				CBDE14EF2BEBC820005AB1DF /* Actions.sks */,
-				CBDE14F12BEBC820005AB1DF /* GameScene.swift */,
-				CBDE15022BEBC9F6005AB1DF /* Spaceship.swift */,
-				CBDE14F32BEBC820005AB1DF /* GameViewController.swift */,
+				CBDE15172BF27C5E005AB1DF /* Models */,
 				CBDE14F52BEBC820005AB1DF /* Main.storyboard */,
 				CBDE14F82BEBC822005AB1DF /* Assets.xcassets */,
 				CBDE14FA2BEBC822005AB1DF /* LaunchScreen.storyboard */,
+				CBDE15042BECE2C0005AB1DF /* Info.plist */,
+				CBDE15052BECE4E2005AB1DF /* Frameworks */,
 			);
 			path = DualClone;
 			sourceTree = "<group>";
@@ -86,6 +92,42 @@
 				CBDE15062BECE4E3005AB1DF /* CoreMotion.framework */,
 			);
 			name = Frameworks;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		CBDE150A2BED0D86005AB1DF /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				CBDE14F12BEBC820005AB1DF /* GameScene.swift */,
+				CBDE14ED2BEBC820005AB1DF /* GameScene.sks */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		CBDE15112BED0FB5005AB1DF /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CBDE14F32BEBC820005AB1DF /* GameViewController.swift */,
+				CBDE150F2BED0FAD005AB1DF /* WelcomeController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		CBDE15142BF25333005AB1DF /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				CBDE15122BF25103005AB1DF /* ConnectionManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		CBDE15172BF27C5E005AB1DF /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CBDE15022BEBC9F6005AB1DF /* Spaceship.swift */,
+				CBDE15152BF27C51005AB1DF /* Bullet.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -162,6 +204,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBDE14F22BEBC820005AB1DF /* GameScene.swift in Sources */,
+				CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */,
+				CBDE15102BED0FAD005AB1DF /* WelcomeController.swift in Sources */,
+				CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */,
 				CBDE15032BEBC9F6005AB1DF /* Spaceship.swift in Sources */,
 				CBDE14F42BEBC820005AB1DF /* GameViewController.swift in Sources */,
 				CBDE14EC2BEBC820005AB1DF /* AppDelegate.swift in Sources */,
