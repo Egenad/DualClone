@@ -9,7 +9,13 @@ import Foundation
 
 struct Bullet : Codable {
     var position: CGPoint
+    var velocity: CGFloat
     var playerID: String
+    
+    mutating func mirrorBullet(for screenHeight: CGFloat) {
+        velocity = -velocity
+        position.y = screenHeight - position.y
+    }
 }
 
 func deserializeBullet(_ data: Data) -> Bullet? {

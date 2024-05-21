@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Esta aplicación necesita hacer uso de la conexión Bluetooth para encontrar a otros jugadores.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Esta aplicación utiliza el giroscopio del dispositivo para detectar el movimiento del mismo y permitir al usuario controlar la nave espacial inclinando el dispositivo.</string>
 </dict>

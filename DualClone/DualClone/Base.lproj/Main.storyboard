@@ -12,9 +12,9 @@
         <!--Game View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="GameViewController" customModule="DualClone" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GameScene" wantsFullScreenLayout="YES" id="BV1-FR-VrT" customClass="GameViewController" customModule="DualClone" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx" customClass="SKView">
-                        <rect key="frame" x="0.0" y="0.0" width="704" height="704"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1133" height="744"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="4qk-I5-YsI"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -43,10 +43,12 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Example: Neo, Mike, Klea..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cVu-iK-nss">
-                                <rect key="frame" x="465" y="345.5" width="203" height="53"/>
+                                <rect key="frame" x="465.5" y="345.5" width="202.5" height="53"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="53" id="0hz-Mv-5ms"/>
                                 </constraints>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -69,50 +71,71 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dt1-t1-rgP">
-                                <rect key="frame" x="535.5" y="491.5" width="62" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="hyN-CQ-u4o"/>
-                                </constraints>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Start">
-                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <segue destination="BV1-FR-VrT" kind="show" id="Phi-FM-zOI"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="odn-Oz-yVa">
+                                <rect key="frame" x="433" y="491.5" width="267" height="35"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dt1-t1-rgP">
+                                        <rect key="frame" x="0.0" y="0.0" width="123.5" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="hyN-CQ-u4o"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Create Room">
+                                            <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="createRoom:" destination="VWt-6T-Ktx" eventType="touchUpInside" id="XLe-2C-GsM"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LTs-6o-cE7">
+                                        <rect key="frame" x="143.5" y="0.0" width="123.5" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="3HS-eB-ApY"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Join Room">
+                                            <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="joinRoom:" destination="VWt-6T-Ktx" eventType="touchUpInside" id="Jnw-b8-Bnj"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="yVT-VW-nvJ"/>
                         <color key="backgroundColor" systemColor="systemPinkColor"/>
                         <constraints>
                             <constraint firstItem="wa0-UF-O74" firstAttribute="top" secondItem="yVT-VW-nvJ" secondAttribute="top" constant="20" id="3ya-Xl-lZc"/>
                             <constraint firstItem="cVu-iK-nss" firstAttribute="centerX" secondItem="Oni-eg-hLK" secondAttribute="centerX" id="7CH-8t-vWr"/>
-                            <constraint firstItem="dt1-t1-rgP" firstAttribute="top" secondItem="kQR-AB-h3w" secondAttribute="bottom" constant="15" id="8rz-Ci-Luz"/>
                             <constraint firstItem="kQR-AB-h3w" firstAttribute="top" secondItem="9YR-rp-hbj" secondAttribute="bottom" constant="8" id="ARC-6e-fCS"/>
                             <constraint firstItem="cVu-iK-nss" firstAttribute="centerX" secondItem="Oni-eg-hLK" secondAttribute="centerX" id="Hoj-U6-GTA"/>
                             <constraint firstItem="wa0-UF-O74" firstAttribute="leading" secondItem="yVT-VW-nvJ" secondAttribute="leading" constant="20" id="R7V-lq-At4"/>
                             <constraint firstItem="9YR-rp-hbj" firstAttribute="centerX" secondItem="Oni-eg-hLK" secondAttribute="centerX" id="XtO-Og-jcK"/>
                             <constraint firstItem="cVu-iK-nss" firstAttribute="centerY" secondItem="Oni-eg-hLK" secondAttribute="centerY" id="aFH-C5-ipZ"/>
-                            <constraint firstItem="dt1-t1-rgP" firstAttribute="centerX" secondItem="Oni-eg-hLK" secondAttribute="centerX" id="aOA-WM-CQj"/>
+                            <constraint firstItem="odn-Oz-yVa" firstAttribute="centerX" secondItem="Oni-eg-hLK" secondAttribute="centerX" id="aLi-bt-lfC"/>
                             <constraint firstItem="yVT-VW-nvJ" firstAttribute="trailing" secondItem="wa0-UF-O74" secondAttribute="trailing" constant="20" id="exP-bZ-oKW"/>
                             <constraint firstItem="kQR-AB-h3w" firstAttribute="centerX" secondItem="Oni-eg-hLK" secondAttribute="centerX" id="i8h-bX-wW9"/>
                             <constraint firstItem="jDn-xq-C4I" firstAttribute="top" secondItem="wa0-UF-O74" secondAttribute="bottom" constant="8" id="mVS-kN-xLQ"/>
                             <constraint firstItem="jDn-xq-C4I" firstAttribute="centerX" secondItem="Oni-eg-hLK" secondAttribute="centerX" id="tZ7-Sz-X6S"/>
                             <constraint firstItem="9YR-rp-hbj" firstAttribute="top" secondItem="cVu-iK-nss" secondAttribute="bottom" constant="15" id="uJ3-r4-J7T"/>
                             <constraint firstItem="cVu-iK-nss" firstAttribute="top" secondItem="jDn-xq-C4I" secondAttribute="bottom" constant="8" symbolic="YES" id="vIP-Ud-iTd"/>
+                            <constraint firstItem="odn-Oz-yVa" firstAttribute="top" secondItem="kQR-AB-h3w" secondAttribute="bottom" constant="15" id="zRA-b3-u2G"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="connectionType" destination="kQR-AB-h3w" id="kYa-b4-eJ3"/>
                         <outlet property="nickNameField" destination="cVu-iK-nss" id="N7L-JA-Lok"/>
+                        <segue destination="BV1-FR-VrT" kind="presentation" identifier="GameScene" modalPresentationStyle="fullScreen" id="1o2-vb-aL9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HAe-Gc-W7z" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="54.496402877697847" y="815.10791366906483"/>
+            <point key="canvasLocation" x="53.940886699507388" y="813.60000000000002"/>
         </scene>
     </scenes>
     <resources>

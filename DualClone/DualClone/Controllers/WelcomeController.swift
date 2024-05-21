@@ -15,16 +15,59 @@ class WelcomeController: UIViewController {
     private let connectionManager = ConnectionManager.instance
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-        connectionManager.switchToBluetooth()
+        
+        ConnectionManager.instance.onSuccessfulConnection = {
+            DispatchQueue.main.async {
+                self.startGame()
+            }
+        }
+        
+        nickNameField.attributedPlaceholder = NSAttributedString(string: "Example: Neo, Mike, Klea...",
+                                                                         attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
     }
     
-    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+    @IBAction func createRoom(_ sender: Any) {
+        if(hasName()){
+            switch connectionType.selectedSegmentIndex {
+                case TransferService.BLE_OPTION:
+                    connectionManager.startBLERoom()
+                    break
+                case TransferService.WIFI_OPTION:
+                    
+                    break
+                default:
+                    // Nothing
+                    break
+            }
+        }
+    }
+    
+    @IBAction func joinRoom(_ sender: Any) {
+        if(hasName()){
+            switch connectionType.selectedSegmentIndex {
+                case TransferService.BLE_OPTION:
+                    connectionManager.joinBLERoom()
+                    break
+                case TransferService.WIFI_OPTION:
+                    
+                    break
+                default:
+                    // Nothing
+                    break
+            }
+        }
+    }
+    
+    private func hasName() -> Bool {
         guard let nickname = nickNameField.text, !nickname.isEmpty else {
             return false
         }
-        
         return true
     }
-
+    
+    private func startGame(){
+        performSegue(withIdentifier: "GameScene", sender: self)
+    }
 }

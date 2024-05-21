@@ -15,15 +15,9 @@ class GameScene: SKScene {
     private var spinnyNode : SKShapeNode?
     private var spaceship : Spaceship!
     let motionManager = CMMotionManager()
+    let connectionManager = ConnectionManager.instance
     
     override func didMove(to view: SKView) {
-        
-        // Get label node from scene and store it for use later
-        /*self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }*/
         
         spaceship = Spaceship()
         spaceship.position = CGPoint(x: 0, y: 0)
@@ -89,17 +83,14 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        /*if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }*/
         
-        //for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-        
-        //guard let touch = touches.first else { return }
-        //let location = touch.location(in: self)
-        
+        // Fire bullet on main device
         let bullet = spaceship.fireBullet()
         addChild(bullet)
+        
+        // Send bullet via bluetooth
+        let bulletStruct = Bullet(position: bullet.position, velocity: bullet.speed, playerID: "test") // TODO: Cambiar ID
+        connectionManager.sendDataBLE(data: serializeBullet(bulletStruct), characteristicUUID: TransferService.characteristicUUID)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

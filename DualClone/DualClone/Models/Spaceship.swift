@@ -30,8 +30,9 @@ class Spaceship : SKSpriteNode {
         bullet.name = "bullet"
         bullet.position = self.position
         bullet.zPosition = 1
+        bullet.speed = 1000
         
-        let bullecAction = SKAction.moveBy(x: 0, y: 1000, duration: 1)
+        let bullecAction = SKAction.moveBy(x: 0, y: bullet.speed, duration: 1)
         bullet.run(SKAction.repeatForever(bullecAction))
         
         return bullet

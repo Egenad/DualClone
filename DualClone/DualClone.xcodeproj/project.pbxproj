@@ -20,6 +20,7 @@
 		CBDE15102BED0FAD005AB1DF /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE150F2BED0FAD005AB1DF /* WelcomeController.swift */; };
 		CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15122BF25103005AB1DF /* ConnectionManager.swift */; };
 		CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15152BF27C51005AB1DF /* Bullet.swift */; };
+		CBDE15192BF64932005AB1DF /* TransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15182BF64932005AB1DF /* TransferService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		CBDE150F2BED0FAD005AB1DF /* WelcomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeController.swift; sourceTree = "<group>"; };
 		CBDE15122BF25103005AB1DF /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		CBDE15152BF27C51005AB1DF /* Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
+		CBDE15182BF64932005AB1DF /* TransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				CBDE14FA2BEBC822005AB1DF /* LaunchScreen.storyboard */,
 				CBDE15042BECE2C0005AB1DF /* Info.plist */,
 				CBDE15052BECE4E2005AB1DF /* Frameworks */,
+				CBDE151A2BF6493D005AB1DF /* Utils */,
 			);
 			path = DualClone;
 			sourceTree = "<group>";
@@ -128,6 +131,14 @@
 				CBDE15152BF27C51005AB1DF /* Bullet.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		CBDE151A2BF6493D005AB1DF /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				CBDE15182BF64932005AB1DF /* TransferService.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -209,6 +220,7 @@
 				CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */,
 				CBDE15032BEBC9F6005AB1DF /* Spaceship.swift in Sources */,
 				CBDE14F42BEBC820005AB1DF /* GameViewController.swift in Sources */,
+				CBDE15192BF64932005AB1DF /* TransferService.swift in Sources */,
 				CBDE14EC2BEBC820005AB1DF /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

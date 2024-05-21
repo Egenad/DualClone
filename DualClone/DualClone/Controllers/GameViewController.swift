@@ -10,6 +10,8 @@ import SpriteKit
 import GameplayKit
 
 class GameViewController: UIViewController {
+    
+    var playerType = TransferService.CENTRAL_PL
 
     override func viewDidLoad() {
         super.viewDidLoad()
