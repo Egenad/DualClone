@@ -129,6 +129,8 @@
                     </view>
                     <connections>
                         <outlet property="connectionType" destination="kQR-AB-h3w" id="kYa-b4-eJ3"/>
+                        <outlet property="createRoomButton" destination="dt1-t1-rgP" id="FTV-RR-i2Y"/>
+                        <outlet property="joinRoomButton" destination="LTs-6o-cE7" id="iUf-93-sd7"/>
                         <outlet property="nickNameField" destination="cVu-iK-nss" id="N7L-JA-Lok"/>
                         <segue destination="BV1-FR-VrT" kind="presentation" identifier="GameScene" modalPresentationStyle="fullScreen" id="1o2-vb-aL9"/>
                     </connections>

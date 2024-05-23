@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB653B9C2BFE62E300DDC953 /* Physics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB653B9B2BFE62E300DDC953 /* Physics.swift */; };
 		CBDE14EC2BEBC820005AB1DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */; };
 		CBDE14EE2BEBC820005AB1DF /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = CBDE14ED2BEBC820005AB1DF /* GameScene.sks */; };
 		CBDE14F02BEBC820005AB1DF /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = CBDE14EF2BEBC820005AB1DF /* Actions.sks */; };
@@ -21,9 +22,11 @@
 		CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15122BF25103005AB1DF /* ConnectionManager.swift */; };
 		CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15152BF27C51005AB1DF /* Bullet.swift */; };
 		CBDE15192BF64932005AB1DF /* TransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15182BF64932005AB1DF /* TransferService.swift */; };
+		CBE4633C2BFCFFD900413AD5 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE4633B2BFCFFD900413AD5 /* Throttler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CB653B9B2BFE62E300DDC953 /* Physics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physics.swift; sourceTree = "<group>"; };
 		CBDE14E82BEBC820005AB1DF /* DualClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DualClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CBDE14ED2BEBC820005AB1DF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -40,6 +43,7 @@
 		CBDE15122BF25103005AB1DF /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		CBDE15152BF27C51005AB1DF /* Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
 		CBDE15182BF64932005AB1DF /* TransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferService.swift; sourceTree = "<group>"; };
+		CBE4633B2BFCFFD900413AD5 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */,
+				CBDE151A2BF6493D005AB1DF /* Utils */,
 				CBDE15112BED0FB5005AB1DF /* Controllers */,
 				CBDE15142BF25333005AB1DF /* Managers */,
 				CBDE150A2BED0D86005AB1DF /* Scenes */,
@@ -84,7 +89,6 @@
 				CBDE14FA2BEBC822005AB1DF /* LaunchScreen.storyboard */,
 				CBDE15042BECE2C0005AB1DF /* Info.plist */,
 				CBDE15052BECE4E2005AB1DF /* Frameworks */,
-				CBDE151A2BF6493D005AB1DF /* Utils */,
 			);
 			path = DualClone;
 			sourceTree = "<group>";
@@ -137,6 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				CBDE15182BF64932005AB1DF /* TransferService.swift */,
+				CBE4633B2BFCFFD900413AD5 /* Throttler.swift */,
+				CB653B9B2BFE62E300DDC953 /* Physics.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -216,10 +222,12 @@
 			files = (
 				CBDE14F22BEBC820005AB1DF /* GameScene.swift in Sources */,
 				CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */,
+				CBE4633C2BFCFFD900413AD5 /* Throttler.swift in Sources */,
 				CBDE15102BED0FAD005AB1DF /* WelcomeController.swift in Sources */,
 				CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */,
 				CBDE15032BEBC9F6005AB1DF /* Spaceship.swift in Sources */,
 				CBDE14F42BEBC820005AB1DF /* GameViewController.swift in Sources */,
+				CB653B9C2BFE62E300DDC953 /* Physics.swift in Sources */,
 				CBDE15192BF64932005AB1DF /* TransferService.swift in Sources */,
 				CBDE14EC2BEBC820005AB1DF /* AppDelegate.swift in Sources */,
 			);

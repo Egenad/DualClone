@@ -9,9 +9,9 @@ import SpriteKit
 import GameplayKit
 import CoreMotion
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    //private var label : SKLabelNode?
+    weak var gameDelegate: GameSceneDelegate?
     private var spinnyNode : SKShapeNode?
     private var spaceship : Spaceship!
     let motionManager = CMMotionManager()
@@ -19,13 +19,18 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         
+        self.physicsWorld.contactDelegate = self
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+        
+        // Player
         spaceship = Spaceship()
         spaceship.position = CGPoint(x: 0, y: 0)
         addChild(spaceship)
         
+        // Gyro movement
         startGyroMotion()
         
-        // Create shape node to use during mouse interaction
+        // Shoot effect
         let w = (self.size.width + self.size.height) * 0.01
         self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
         
@@ -54,23 +59,9 @@ class GameScene: SKScene {
             
             self.spaceship.position.x = max(min(self.spaceship.position.x, self.size.width / 2), -self.size.width / 2)
             self.spaceship.position.y = max(min(self.spaceship.position.y, self.size.height / 2), -self.size.height / 2)
-        }
-    }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
+            
+            let rotationAngle = CGFloat(rotationRate.z) * 0.01
+            self.spaceship.zRotation += rotationAngle
         }
     }
     
@@ -82,19 +73,28 @@ class GameScene: SKScene {
         }
     }
     
+    func spawnEnemyBullet(_ newBullet: Bullet){
+        let enemyBullet = self.spaceship?.fireEnemyBullet(newBullet)
+        
+        if(enemyBullet != nil){
+            self.addChild(enemyBullet!)
+        }
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         // Fire bullet on main device
         let bullet = spaceship.fireBullet()
-        addChild(bullet)
+        self.addChild(bullet)
         
-        // Send bullet via bluetooth
-        let bulletStruct = Bullet(position: bullet.position, velocity: bullet.speed, playerID: "test") // TODO: Cambiar ID
-        connectionManager.sendDataBLE(data: serializeBullet(bulletStruct), characteristicUUID: TransferService.characteristicUUID)
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        // Send the bullet to the other player
+        var bulletStruct = Bullet(position: bullet.position)
+        bulletStruct.mirrorBullet(for: UIScreen.main.bounds.height)
+        
+        if(connectionManager.connectionType == TransferService.BLE_OPTION){
+            // Send bullet via bluetooth
+            connectionManager.sendDataBLE(data: serializeBullet(bulletStruct), characteristicUUID: TransferService.characteristicUUID)
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -107,6 +107,49 @@ class GameScene: SKScene {
     
     
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+        // Eliminar balas que están fuera de los límites de la pantalla
+        self.enumerateChildNodes(withName: "bullet") { (node, stop) in
+            if !self.frame.contains(node.position) {
+                node.removeFromParent()
+                print("Bullet removed from scene")
+            }
+        }
+        
+        self.enumerateChildNodes(withName: "enemyBullet") { (node, stop) in
+            if node.position.y < 0 - (UIScreen.main.bounds.height / 2) {
+                node.removeFromParent()
+                print("Enemy bullet removed from scene")
+            }
+        }
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        
+        switch contactMask {
+        case PhysicsCategory.spaceship | PhysicsCategory.bullet:
+            if let spaceshipNode = contact.bodyA.node as? Spaceship {
+                checkGameOver(spaceshipNode: spaceshipNode)
+            } else if let spaceshipNode = contact.bodyB.node as? Spaceship {
+                checkGameOver(spaceshipNode: spaceshipNode)
+            }
+            
+            if let bulletNode = contact.bodyA.node as? BulletObject {
+                bulletNode.removeFromParent()
+            } else if let bulletNode = contact.bodyB.node as? BulletObject {
+                bulletNode.removeFromParent()
+            }
+            
+        default:
+            return
+        }
+    }
+    
+    private func checkGameOver(spaceshipNode: Spaceship){
+        spaceshipNode.health -= 10
+        print("Spaceship hit! Health: \(spaceshipNode.health)")
+        if(spaceshipNode.health <= 0){
+            gameDelegate?.playerDidDie()
+        }
     }
 }

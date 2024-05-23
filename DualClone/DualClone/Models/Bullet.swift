@@ -6,15 +6,42 @@
 //
 
 import Foundation
+import SpriteKit
+
+class BulletObject : SKSpriteNode {
+    
+    let bulletWidth = 10
+    let bulletHeight = 10
+    
+    init(color: UIColor, physics: Bool, position: CGPoint, name: String) {
+        let size = CGSize(width: bulletWidth, height: bulletHeight) // Tamaño del cubo
+        super.init(texture: nil, color: color, size: size)
+        
+        self.name = name
+        self.position = position
+        self.zPosition = 1
+        
+        if(physics){
+            self.physicsBody = SKPhysicsBody(rectangleOf: self.size)
+            self.physicsBody?.isDynamic = true
+            self.physicsBody?.affectedByGravity = false
+            self.physicsBody?.categoryBitMask = PhysicsCategory.bullet
+            self.physicsBody?.contactTestBitMask = PhysicsCategory.spaceship
+            self.physicsBody?.collisionBitMask = PhysicsCategory.none
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
 struct Bullet : Codable {
     var position: CGPoint
-    var velocity: CGFloat
-    var playerID: String
     
     mutating func mirrorBullet(for screenHeight: CGFloat) {
-        velocity = -velocity
         position.y = screenHeight - position.y
+        position.x = -position.x
     }
 }
 

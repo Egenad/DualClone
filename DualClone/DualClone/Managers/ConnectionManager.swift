@@ -13,13 +13,17 @@ class ConnectionManager: NSObject{
     static let instance = ConnectionManager()
     
     var onSuccessfulConnection: (() -> Void)?
+    var receiveBullet: ((Bullet) -> Void)?
+    var endGameReceived: (() -> Void)?
     
     var playerType = TransferService.CENTRAL_PL
+    var connectionType = TransferService.BLE_OPTION
     
     // --- CENTRAL ---
     var centralManager: CBCentralManager?
     var peripheralFound: CBPeripheral!
     var chrcSubscribed: CBCharacteristic!
+    var endGameChrcSubscribed: CBCharacteristic!
     let peripheralName = "DualClonePeripheral"
     
     // --- PERIPHERAL ---
@@ -30,6 +34,12 @@ class ConnectionManager: NSObject{
                                                          properties: [.notify, .write, .read, .writeWithoutResponse],
                                                          value: nil,
                                                          permissions: [.readable, .writeable])
+    
+    var endGameCharacteristic = CBMutableCharacteristic(type: TransferService.endGameCharacteristicUUID,
+                                                        properties: [.notify, .write, .read, .writeWithoutResponse],
+                                                        value: nil,
+                                                        permissions: [.readable, .writeable])
+
     
     // --- MAIN FUNCTIONS ---
     
@@ -50,10 +60,18 @@ class ConnectionManager: NSObject{
             return
         }
         
-        if(playerType == TransferService.CENTRAL_PL){
-            sendDataFromCentral(data: data!, characteristicUUID: characteristicUUID)
-        }else{
-            sendDataFromPeripheral(data: data!, characteristicUUID: characteristicUUID)
+        if(characteristicUUID == TransferService.characteristicUUID){
+            if(playerType == TransferService.CENTRAL_PL){
+                sendDataFromCentral(data: data!, characteristic: chrcSubscribed)
+            }else{
+                sendDataFromPeripheral(data: data!, characteristic: transferCharacteristic)
+            }
+        }else if(characteristicUUID == TransferService.endGameCharacteristicUUID){
+            if(playerType == TransferService.CENTRAL_PL){
+                sendDataFromCentral(data: data!, characteristic: endGameChrcSubscribed)
+            }else{
+                sendDataFromPeripheral(data: data!, characteristic: endGameCharacteristic)
+            }
         }
     }
 
@@ -104,7 +122,7 @@ extension ConnectionManager: CBPeripheralDelegate{
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         for service in peripheral.services! {
             if service.uuid == TransferService.serviceUUID {
-                peripheral.discoverCharacteristics([TransferService.characteristicUUID], for: service)
+                peripheral.discoverCharacteristics([TransferService.characteristicUUID, TransferService.endGameCharacteristicUUID], for: service)
                 print("Central - Found the service \(service) and looking for characteristics")
             }
         }
@@ -114,13 +132,14 @@ extension ConnectionManager: CBPeripheralDelegate{
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         for characteristic in service.characteristics! {
             if characteristic.uuid == TransferService.characteristicUUID {
-                print("Central - Found characteristic and subscribing to it")
                 peripheral.setNotifyValue(true, for: characteristic)
                 chrcSubscribed = characteristic
-                if (characteristic.properties.contains(.read)){
-                    peripheral.readValue(for: characteristic)
-                    print("Central - Found characteristic and requesting its reading")
-                }
+                print("Central - Found bullet characteristic")
+            }
+            if characteristic.uuid == TransferService.endGameCharacteristicUUID {
+                peripheral.setNotifyValue(true, for: characteristic)
+                endGameChrcSubscribed = characteristic
+                print("Central - Found end game characteristic")
             }
         }
     }
@@ -129,25 +148,25 @@ extension ConnectionManager: CBPeripheralDelegate{
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?){
         if characteristic.uuid == TransferService.characteristicUUID {
             guard let data = characteristic.value else {
-                print("Error: No se pudo obtener el valor de la característica.")
+                print("Error: No se pudo obtener el valor de la característica bullet.")
                 return
             }
             
             if let bullet = deserializeBullet(data) {
-                print("Central recibe bala en posicion: \(bullet.position)")
+                receiveBullet?(bullet)
             } else {
                 print("Error: No se pudo deserializar la bala recibida.")
+            }
+        } else if characteristic.uuid == TransferService.endGameCharacteristicUUID {
+            if let data = characteristic.value, let message = String(data: data, encoding: .utf8), message == "Game Over" {
+                print("Game Over received")
+                endGameReceived?()
             }
         }
     }
     
-    func sendDataFromCentral(data: Data, characteristicUUID: CBUUID) {
-        guard characteristicUUID == TransferService.characteristicUUID else {
-            print("La característica no está configurada.")
-            return
-        }
-        print("Enviando bala desde Central")
-        peripheralFound.writeValue(data, for: chrcSubscribed, type: .withoutResponse)
+    func sendDataFromCentral(data: Data, characteristic: CBCharacteristic) {
+        peripheralFound.writeValue(data, for: characteristic, type: .withoutResponse)
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -172,7 +191,7 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
         let myService = CBMutableService(type: TransferService.serviceUUID, primary: true)
         
         // Add the characteristic to the service.
-        myService.characteristics = [transferCharacteristic]
+        myService.characteristics = [transferCharacteristic, endGameCharacteristic]
         
         // And add it to the peripheral manager.
         peripheralManager.add(myService)
@@ -214,29 +233,40 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
         print("Peripheral recibe data")
         
         for request in requests {
-            guard request.characteristic.uuid == TransferService.characteristicUUID else {
+            guard request.characteristic.uuid == TransferService.characteristicUUID || request.characteristic.uuid == TransferService.endGameCharacteristicUUID else {
                 // Not the characteristic we want
                 peripheral.respond(to: request, withResult: .attributeNotFound)
                 continue
             }
             
-            // Obtain the new bullet information
-            if let value = request.value {
-                let newBullet = deserializeBullet(value)
-                
-                // TODO: Spawn the received bullet
-                print("Peripheral recibe bala en posicion \(String(describing: newBullet?.position))")
+            if request.characteristic.uuid == TransferService.characteristicUUID {
+                // Obtain the new bullet information
+                if let value = request.value {
+                    if let bullet = deserializeBullet(value) {
+                        print("Peripheral recibe bala en posicion \(String(describing: bullet.position))")
+                        receiveBullet?(bullet)
+                    }
+                }
+            } else if let data = request.value, let message = String(data: data, encoding: .utf8), message == "Game Over" {
+                endGameReceived?()
             }
         }
     }
     
-    func sendDataFromPeripheral(data: Data, characteristicUUID: CBUUID) {
-        guard characteristicUUID == TransferService.characteristicUUID else {
-            print("La característica no está configurada.")
-            return
+    func sendDataFromPeripheral(data: Data, characteristic: CBMutableCharacteristic) {
+        peripheralManager?.updateValue(data, for: characteristic, onSubscribedCentrals: [centralFound])
+    }
+    
+    func terminateConnection(){
+        if playerType == TransferService.CENTRAL_PL {
+            if let centralManager = centralManager, let peripheralFound = peripheralFound {
+                centralManager.cancelPeripheralConnection(peripheralFound)
+            }
+        } else if playerType == TransferService.PERIPHERAL_PL {
+            if let peripheralManager = peripheralManager {
+                peripheralManager.stopAdvertising()
+            }
         }
-        print("Enviando bala desde Peripheral")
-        peripheralManager?.updateValue(data, for: transferCharacteristic, onSubscribedCentrals: [centralFound])
     }
 
 }
