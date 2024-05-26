@@ -13,7 +13,7 @@ class BulletObject : SKSpriteNode {
     let bulletWidth = 10
     let bulletHeight = 10
     
-    init(color: UIColor, physics: Bool, position: CGPoint, name: String) {
+    init(color: UIColor, physics: Bool, position: CGPoint, name: String, yVelocity: CGFloat, angle: CGFloat) {
         let size = CGSize(width: bulletWidth, height: bulletHeight) // Tamaño del cubo
         super.init(texture: nil, color: color, size: size)
         
@@ -29,6 +29,12 @@ class BulletObject : SKSpriteNode {
             self.physicsBody?.contactTestBitMask = PhysicsCategory.spaceship
             self.physicsBody?.collisionBitMask = PhysicsCategory.none
         }
+        
+        let dx = cos(angle)
+        let dy = sin(angle)
+        
+        let bullecAction = SKAction.moveBy(x: dx * 1000, y: dy * yVelocity, duration: 1)
+        self.run(SKAction.repeatForever(bullecAction))
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -38,10 +44,12 @@ class BulletObject : SKSpriteNode {
 
 struct Bullet : Codable {
     var position: CGPoint
+    var angle: CGFloat
     
     mutating func mirrorBullet(for screenHeight: CGFloat) {
         position.y = screenHeight - position.y
         position.x = -position.x
+        angle = -angle
     }
 }
 

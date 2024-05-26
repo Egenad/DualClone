@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreBluetooth
+import MultipeerConnectivity
 
 class ConnectionManager: NSObject{
     
@@ -30,6 +31,12 @@ class ConnectionManager: NSObject{
     var peripheralManager : CBPeripheralManager!
     var centralFound: CBCentral!
     
+    // --- MULTIPEER ---
+    var peerID: MCPeerID!
+    var mcSession: MCSession!
+    var ptpAdvertiser = PTPAdvertiser()
+    var ptpBrowser = PTPBrowser()
+    
     var transferCharacteristic = CBMutableCharacteristic(type: TransferService.characteristicUUID,
                                                          properties: [.notify, .write, .read, .writeWithoutResponse],
                                                          value: nil,
@@ -43,6 +50,17 @@ class ConnectionManager: NSObject{
     
     // --- MAIN FUNCTIONS ---
     
+    override init(){
+        super.init()
+                
+        // Create a unique identifier for the peer
+        peerID = MCPeerID(displayName: UIDevice.current.name)
+        
+        // Create the session with the peer ID and assign the delegate
+        mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
+        mcSession.delegate = self
+    }
+    
     func startBLERoom(){
         playerType = TransferService.PERIPHERAL_PL
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil, options: [CBPeripheralManagerOptionShowPowerAlertKey: true])
@@ -52,6 +70,14 @@ class ConnectionManager: NSObject{
         playerType = TransferService.CENTRAL_PL
         centralManager = CBCentralManager(delegate: self, queue: nil)
         centralManager?.scanForPeripherals(withServices: [TransferService.serviceUUID], options: nil)
+    }
+    
+    func startWIFIRoom() {
+        ptpAdvertiser.startAdvertising(peerID, mcSession)
+    }
+    
+    func joinWIFIRoom(){
+        ptpBrowser.startBrowse(peerID, mcSession)
     }
     
     func sendDataBLE(data : Data?, characteristicUUID: CBUUID){
@@ -74,7 +100,21 @@ class ConnectionManager: NSObject{
             }
         }
     }
-
+    
+    func sendPTPData(_ data: Data?) {
+        
+        guard data != nil else{
+            return
+        }
+        
+        if mcSession.connectedPeers.count > 0 {
+            do {
+                try mcSession.send(data!, toPeers: mcSession.connectedPeers, with: .reliable)
+            } catch let error {
+                print("Error sending data: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------------------------------------- //
@@ -268,5 +308,40 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
             }
         }
     }
+}
 
+extension ConnectionManager: MCSessionDelegate {
+    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        switch state {
+            case .connected:
+                print("Connected: \(peerID.displayName)")
+                onSuccessfulConnection?()
+            case .connecting:
+                print("Connecting: \(peerID.displayName)")
+            case .notConnected:
+                print("Not Connected: \(peerID.displayName)")
+            @unknown default:
+                print("Unknown state received: \(peerID.displayName)")
+        }
+    }
+    
+    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        print("Received PTP data: \(data)")
+        if let bullet = deserializeBullet(data) {
+            print("PTP - bullet at position \(String(describing: bullet.position))")
+            receiveBullet?(bullet)
+        }
+    }
+    
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+        
+    }
+    
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+        
+    }
+    
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
+        
+    }
 }

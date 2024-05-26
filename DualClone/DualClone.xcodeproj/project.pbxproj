@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		CB653B9C2BFE62E300DDC953 /* Physics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB653B9B2BFE62E300DDC953 /* Physics.swift */; };
+		CB653B9F2C01FA7C00DDC953 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB653B9E2C01FA7C00DDC953 /* MultipeerConnectivity.framework */; };
+		CB653BA22C0204BC00DDC953 /* PTPAdvertiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB653BA12C0204BC00DDC953 /* PTPAdvertiser.swift */; };
+		CB653BA42C0204C800DDC953 /* PTPBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB653BA32C0204C800DDC953 /* PTPBrowser.swift */; };
 		CBDE14EC2BEBC820005AB1DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */; };
 		CBDE14EE2BEBC820005AB1DF /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = CBDE14ED2BEBC820005AB1DF /* GameScene.sks */; };
 		CBDE14F02BEBC820005AB1DF /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = CBDE14EF2BEBC820005AB1DF /* Actions.sks */; };
@@ -27,6 +30,9 @@
 
 /* Begin PBXFileReference section */
 		CB653B9B2BFE62E300DDC953 /* Physics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physics.swift; sourceTree = "<group>"; };
+		CB653B9E2C01FA7C00DDC953 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+		CB653BA12C0204BC00DDC953 /* PTPAdvertiser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PTPAdvertiser.swift; sourceTree = "<group>"; };
+		CB653BA32C0204C800DDC953 /* PTPBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PTPBrowser.swift; sourceTree = "<group>"; };
 		CBDE14E82BEBC820005AB1DF /* DualClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DualClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CBDE14ED2BEBC820005AB1DF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -51,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB653B9F2C01FA7C00DDC953 /* MultipeerConnectivity.framework in Frameworks */,
 				CBDE15072BECE4E3005AB1DF /* CoreMotion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -58,11 +65,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CB653B9D2C01FA7C00DDC953 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CB653B9E2C01FA7C00DDC953 /* MultipeerConnectivity.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CBDE14DF2BEBC820005AB1DF = {
 			isa = PBXGroup;
 			children = (
 				CBDE14EA2BEBC820005AB1DF /* DualClone */,
 				CBDE14E92BEBC820005AB1DF /* Products */,
+				CB653B9D2C01FA7C00DDC953 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -124,6 +140,8 @@
 			isa = PBXGroup;
 			children = (
 				CBDE15122BF25103005AB1DF /* ConnectionManager.swift */,
+				CB653BA12C0204BC00DDC953 /* PTPAdvertiser.swift */,
+				CB653BA32C0204C800DDC953 /* PTPBrowser.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -223,6 +241,8 @@
 				CBDE14F22BEBC820005AB1DF /* GameScene.swift in Sources */,
 				CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */,
 				CBE4633C2BFCFFD900413AD5 /* Throttler.swift in Sources */,
+				CB653BA42C0204C800DDC953 /* PTPBrowser.swift in Sources */,
+				CB653BA22C0204BC00DDC953 /* PTPAdvertiser.swift in Sources */,
 				CBDE15102BED0FAD005AB1DF /* WelcomeController.swift in Sources */,
 				CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */,
 				CBDE15032BEBC9F6005AB1DF /* Spaceship.swift in Sources */,

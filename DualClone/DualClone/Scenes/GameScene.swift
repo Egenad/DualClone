@@ -17,6 +17,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let motionManager = CMMotionManager()
     let connectionManager = ConnectionManager.instance
     
+    var background : SKSpriteNode!
+    
     override func didMove(to view: SKView) {
         
         self.physicsWorld.contactDelegate = self
@@ -42,6 +44,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                               SKAction.fadeOut(withDuration: 0.5),
                                               SKAction.removeFromParent()]))
         }
+        
+        createPatternBackground()
     }
     
     private func startGyroMotion(){
@@ -88,12 +92,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(bullet)
         
         // Send the bullet to the other player
-        var bulletStruct = Bullet(position: bullet.position)
+        var bulletStruct = Bullet(position: bullet.position, angle: spaceship.zRotation)
         bulletStruct.mirrorBullet(for: UIScreen.main.bounds.height)
         
         if(connectionManager.connectionType == TransferService.BLE_OPTION){
             // Send bullet via bluetooth
             connectionManager.sendDataBLE(data: serializeBullet(bulletStruct), characteristicUUID: TransferService.characteristicUUID)
+        }else{
+            // Send bullet peer to peer
+            connectionManager.sendPTPData(serializeBullet(bulletStruct))
         }
     }
     
@@ -150,6 +157,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("Spaceship hit! Health: \(spaceshipNode.health)")
         if(spaceshipNode.health <= 0){
             gameDelegate?.playerDidDie()
+        }else{
+            simulateDamageEffect()
         }
+    }
+    
+    private func createPatternBackground(){
+        let dotTexture = SKTexture(imageNamed: "dotPattern")
+                
+        // Crear un nodo de sprite con la textura del patrón
+        background = SKSpriteNode(texture: dotTexture)
+        background.size = self.size
+        background.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
+        background.zPosition = -1
+        background.color = UIColor.red
+        background.alpha = 1.0
+        addChild(background)
+    }
+    
+    private func simulateDamageEffect() {
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.2)
+        let waitAction = SKAction.wait(forDuration: 1.0)
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
+        let sequence = SKAction.sequence([fadeInAction, waitAction, fadeOutAction])
+        background.run(sequence)
     }
 }
