@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dual-clone._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Esta aplicación necesita hacer uso de la conexión local o WIFI para encontrar a otros jugadores.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Esta aplicación necesita hacer uso de la conexión Bluetooth para encontrar a otros jugadores.</string>
 	<key>NSMotionUsageDescription</key>

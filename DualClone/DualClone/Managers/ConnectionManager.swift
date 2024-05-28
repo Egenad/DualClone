@@ -54,29 +54,37 @@ class ConnectionManager: NSObject{
         super.init()
                 
         // Create a unique identifier for the peer
+        print("Creating peerID with name: \(UIDevice.current.name)")
         peerID = MCPeerID(displayName: UIDevice.current.name)
         
         // Create the session with the peer ID and assign the delegate
         mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
         mcSession.delegate = self
+        print("Session created: \(String(describing: mcSession))")
     }
     
     func startBLERoom(){
+        connectionType = TransferService.BLE_OPTION
         playerType = TransferService.PERIPHERAL_PL
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil, options: [CBPeripheralManagerOptionShowPowerAlertKey: true])
     }
     
     func joinBLERoom(){
+        connectionType = TransferService.BLE_OPTION
         playerType = TransferService.CENTRAL_PL
         centralManager = CBCentralManager(delegate: self, queue: nil)
         centralManager?.scanForPeripherals(withServices: [TransferService.serviceUUID], options: nil)
     }
     
     func startWIFIRoom() {
+        connectionType = TransferService.WIFI_OPTION
+        playerType = TransferService.PERIPHERAL_PL
         ptpAdvertiser.startAdvertising(peerID, mcSession)
     }
     
     func joinWIFIRoom(){
+        connectionType = TransferService.WIFI_OPTION
+        playerType = TransferService.CENTRAL_PL
         ptpBrowser.startBrowse(peerID, mcSession)
     }
     

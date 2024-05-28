@@ -56,7 +56,7 @@ class WelcomeController: UIViewController {
                     connectionManager.startBLERoom()
                     break
                 case TransferService.WIFI_OPTION:
-                    
+                    connectionManager.startWIFIRoom()
                     break
                 default:
                     // Nothing
@@ -76,7 +76,7 @@ class WelcomeController: UIViewController {
                     connectionManager.joinBLERoom()
                     break
                 case TransferService.WIFI_OPTION:
-                    
+                    connectionManager.joinWIFIRoom()
                     break
                 default:
                     // Nothing

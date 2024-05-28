@@ -50,12 +50,12 @@ class Spaceship : SKSpriteNode {
     }
     
     func fireEnemyBullet(_ newBullet : Bullet) -> SKSpriteNode {
-        let bullet = BulletObject(color: enemyBulletColor, physics: true, position: newBullet.position, name: "enemyBullet", yVelocity: -1000, angle: 0.0)
+        let bullet = BulletObject(color: enemyBulletColor, physics: true, position: newBullet.position, name: "enemyBullet", yVelocity: -1000, angle: newBullet.angle)
         return bullet
     }
     
     func fireBullet() -> SKSpriteNode {
-        let bullet = BulletObject(color: bulletColor, physics: false, position: self.position, name: "bullet", yVelocity: 1000, angle: 0.0)
+        let bullet = BulletObject(color: bulletColor, physics: false, position: self.position, name: "bullet", yVelocity: 1000, angle: self.zRotation)
         return bullet
     }
     

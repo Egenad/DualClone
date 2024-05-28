@@ -30,8 +30,10 @@ class BulletObject : SKSpriteNode {
             self.physicsBody?.collisionBitMask = PhysicsCategory.none
         }
         
-        let dx = cos(angle)
-        let dy = sin(angle)
+        let dy = cos(angle)
+        let dx = -sin(angle)
+        
+        print("angle: \(angle), cos_x: \(dx), sin_y: \(dy)")
         
         let bullecAction = SKAction.moveBy(x: dx * 1000, y: dy * yVelocity, duration: 1)
         self.run(SKAction.repeatForever(bullecAction))
