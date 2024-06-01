@@ -17,6 +17,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let motionManager = CMMotionManager()
     let connectionManager = ConnectionManager.instance
     
+    var hpLabel : SKLabelNode?
+    var vsLabel : SKLabelNode?
+    
     var background : SKSpriteNode!
     
     override func didMove(to view: SKView) {
@@ -46,6 +49,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         createPatternBackground()
+        
+        if let label = childNode(withName: "HP") as? SKLabelNode {
+            hpLabel = label
+            hpLabel?.position.x = (-self.size.width / 2) + (hpLabel?.frame.width ?? 0) + 70
+        }
+        
+        if let label = childNode(withName: "VS") as? SKLabelNode {
+            vsLabel = label
+            vsLabel?.position.x = (-self.size.width / 2) + (hpLabel?.frame.width ?? 0) + 70
+        }
+    }
+    
+    func updateEnemyName(){
+        vsLabel?.text = "VS: \(connectionManager.enemyPlayerName)"
     }
     
     private func startGyroMotion(){
@@ -118,14 +135,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.enumerateChildNodes(withName: "bullet") { (node, stop) in
             if !self.frame.contains(node.position) {
                 node.removeFromParent()
-                print("Bullet removed from scene")
             }
         }
         
         self.enumerateChildNodes(withName: "enemyBullet") { (node, stop) in
             if node.position.y < 0 - (UIScreen.main.bounds.height / 2) {
                 node.removeFromParent()
-                print("Enemy bullet removed from scene")
             }
         }
     }
@@ -159,7 +174,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gameDelegate?.playerDidDie()
         }else{
             simulateDamageEffect()
+            updateHealthLabel(spaceshipNode.health)
         }
+    }
+    
+    private func updateHealthLabel(_ newHp : Int){
+        hpLabel?.text = "HP: \(newHp)"
     }
     
     private func createPatternBackground(){
@@ -168,17 +188,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Crear un nodo de sprite con la textura del patrón
         background = SKSpriteNode(texture: dotTexture)
         background.size = self.size
-        background.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
+        background.position = CGPoint(x: 0, y: self.size.height / 2)
         background.zPosition = -1
         background.color = UIColor.red
-        background.alpha = 1.0
+        background.alpha = 0
         addChild(background)
     }
     
     private func simulateDamageEffect() {
-        let fadeInAction = SKAction.fadeIn(withDuration: 0.2)
-        let waitAction = SKAction.wait(forDuration: 1.0)
-        let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.1)
+        let waitAction = SKAction.wait(forDuration: 0.3)
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.6)
         let sequence = SKAction.sequence([fadeInAction, waitAction, fadeOutAction])
         background.run(sequence)
     }

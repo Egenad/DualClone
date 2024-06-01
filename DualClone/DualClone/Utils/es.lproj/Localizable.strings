@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  DualClone
+
+  Created by Angel Terol on 1/6/24.
+  
+*/
+
+"not_valid" = "El nombre no es válido. Utilice únicamente letras, números y guiones bajos y asegúrese de que no exceda los 20 caracteres.";
+"title_not_valid" = "Nombre inválido";
+"empty" = "El nombre no puede estar vacío, por favor introduzca uno.";
+"empty_title" = "Introduzca un nombre";

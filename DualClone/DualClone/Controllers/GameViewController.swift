@@ -52,6 +52,21 @@ class GameViewController: UIViewController, GameSceneDelegate {
                 self.playerDidDie()
             }
         }
+        
+        connectionManager.playerNameReceived = {
+            DispatchQueue.main.async {
+                if let scene = self.gameScene as? GameScene {
+                    scene.updateEnemyName()
+                }
+            }
+        }
+        
+        UIApplication.shared.isIdleTimerDisabled = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        UIApplication.shared.isIdleTimerDisabled = false
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -67,6 +82,8 @@ class GameViewController: UIViewController, GameSceneDelegate {
         if(connectionManager.connectionType == TransferService.BLE_OPTION){
             // Send game over via bluetooth
             connectionManager.sendDataBLE(data: "Game Over".data(using: .utf8)!, characteristicUUID: TransferService.endGameCharacteristicUUID)
+        }else if(connectionManager.connectionType == TransferService.WIFI_OPTION){
+            connectionManager.sendPTPData("Game Over".data(using: .utf8)!)
         }
         
         connectionManager.terminateConnection()

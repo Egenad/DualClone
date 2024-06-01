@@ -11,6 +11,8 @@
 		CB653B9F2C01FA7C00DDC953 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB653B9E2C01FA7C00DDC953 /* MultipeerConnectivity.framework */; };
 		CB653BA22C0204BC00DDC953 /* PTPAdvertiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB653BA12C0204BC00DDC953 /* PTPAdvertiser.swift */; };
 		CB653BA42C0204C800DDC953 /* PTPBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB653BA32C0204C800DDC953 /* PTPBrowser.swift */; };
+		CB653BA72C0B3B9C00DDC953 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB653BA92C0B3B9C00DDC953 /* Localizable.strings */; };
+		CB653BAE2C0B3C5300DDC953 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB653BAD2C0B3C5300DDC953 /* Utils.swift */; };
 		CBDE14EC2BEBC820005AB1DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */; };
 		CBDE14EE2BEBC820005AB1DF /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = CBDE14ED2BEBC820005AB1DF /* GameScene.sks */; };
 		CBDE14F02BEBC820005AB1DF /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = CBDE14EF2BEBC820005AB1DF /* Actions.sks */; };
@@ -25,7 +27,6 @@
 		CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15122BF25103005AB1DF /* ConnectionManager.swift */; };
 		CBDE15162BF27C51005AB1DF /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15152BF27C51005AB1DF /* Bullet.swift */; };
 		CBDE15192BF64932005AB1DF /* TransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDE15182BF64932005AB1DF /* TransferService.swift */; };
-		CBE4633C2BFCFFD900413AD5 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE4633B2BFCFFD900413AD5 /* Throttler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,11 @@
 		CB653B9E2C01FA7C00DDC953 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		CB653BA12C0204BC00DDC953 /* PTPAdvertiser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PTPAdvertiser.swift; sourceTree = "<group>"; };
 		CB653BA32C0204C800DDC953 /* PTPBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PTPBrowser.swift; sourceTree = "<group>"; };
+		CB653BA82C0B3B9C00DDC953 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CB653BAA2C0B3BD500DDC953 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		CB653BAB2C0B3BD500DDC953 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		CB653BAC2C0B3BD500DDC953 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CB653BAD2C0B3C5300DDC953 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		CBDE14E82BEBC820005AB1DF /* DualClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DualClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBDE14EB2BEBC820005AB1DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CBDE14ED2BEBC820005AB1DF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -49,7 +55,6 @@
 		CBDE15122BF25103005AB1DF /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		CBDE15152BF27C51005AB1DF /* Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
 		CBDE15182BF64932005AB1DF /* TransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferService.swift; sourceTree = "<group>"; };
-		CBE4633B2BFCFFD900413AD5 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,8 +164,9 @@
 			isa = PBXGroup;
 			children = (
 				CBDE15182BF64932005AB1DF /* TransferService.swift */,
-				CBE4633B2BFCFFD900413AD5 /* Throttler.swift */,
 				CB653B9B2BFE62E300DDC953 /* Physics.swift */,
+				CB653BA92C0B3B9C00DDC953 /* Localizable.strings */,
+				CB653BAD2C0B3C5300DDC953 /* Utils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -207,6 +213,7 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
 			);
 			mainGroup = CBDE14DF2BEBC820005AB1DF;
 			productRefGroup = CBDE14E92BEBC820005AB1DF /* Products */;
@@ -224,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBDE14F72BEBC820005AB1DF /* Main.storyboard in Resources */,
+				CB653BA72C0B3B9C00DDC953 /* Localizable.strings in Resources */,
 				CBDE14EE2BEBC820005AB1DF /* GameScene.sks in Resources */,
 				CBDE14F92BEBC822005AB1DF /* Assets.xcassets in Resources */,
 				CBDE14FC2BEBC822005AB1DF /* LaunchScreen.storyboard in Resources */,
@@ -240,7 +248,6 @@
 			files = (
 				CBDE14F22BEBC820005AB1DF /* GameScene.swift in Sources */,
 				CBDE15132BF25103005AB1DF /* ConnectionManager.swift in Sources */,
-				CBE4633C2BFCFFD900413AD5 /* Throttler.swift in Sources */,
 				CB653BA42C0204C800DDC953 /* PTPBrowser.swift in Sources */,
 				CB653BA22C0204BC00DDC953 /* PTPAdvertiser.swift in Sources */,
 				CBDE15102BED0FAD005AB1DF /* WelcomeController.swift in Sources */,
@@ -250,16 +257,27 @@
 				CB653B9C2BFE62E300DDC953 /* Physics.swift in Sources */,
 				CBDE15192BF64932005AB1DF /* TransferService.swift in Sources */,
 				CBDE14EC2BEBC820005AB1DF /* AppDelegate.swift in Sources */,
+				CB653BAE2C0B3C5300DDC953 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		CB653BA92C0B3B9C00DDC953 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CB653BA82C0B3B9C00DDC953 /* en */,
+				CB653BAC2C0B3BD500DDC953 /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		CBDE14F52BEBC820005AB1DF /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				CBDE14F62BEBC820005AB1DF /* Base */,
+				CB653BAA2C0B3BD500DDC953 /* es */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -268,6 +286,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				CBDE14FB2BEBC822005AB1DF /* Base */,
+				CB653BAB2C0B3BD500DDC953 /* es */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -280,6 +299,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -343,6 +363,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

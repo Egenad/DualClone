@@ -33,8 +33,6 @@ class BulletObject : SKSpriteNode {
         let dy = cos(angle)
         let dx = -sin(angle)
         
-        print("angle: \(angle), cos_x: \(dx), sin_y: \(dy)")
-        
         let bullecAction = SKAction.moveBy(x: dx * 1000, y: dy * yVelocity, duration: 1)
         self.run(SKAction.repeatForever(bullecAction))
     }

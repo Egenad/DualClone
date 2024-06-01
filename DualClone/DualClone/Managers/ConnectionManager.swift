@@ -16,15 +16,21 @@ class ConnectionManager: NSObject{
     var onSuccessfulConnection: (() -> Void)?
     var receiveBullet: ((Bullet) -> Void)?
     var endGameReceived: (() -> Void)?
+    var playerNameReceived: (() -> Void)?
     
     var playerType = TransferService.CENTRAL_PL
     var connectionType = TransferService.BLE_OPTION
+    
+    var gameFinished = false
+    var playerName = ""
+    var enemyPlayerName = ""
     
     // --- CENTRAL ---
     var centralManager: CBCentralManager?
     var peripheralFound: CBPeripheral!
     var chrcSubscribed: CBCharacteristic!
     var endGameChrcSubscribed: CBCharacteristic!
+    var nameChrcSubscribed: CBCharacteristic!
     let peripheralName = "DualClonePeripheral"
     
     // --- PERIPHERAL ---
@@ -46,13 +52,26 @@ class ConnectionManager: NSObject{
                                                         properties: [.notify, .write, .read, .writeWithoutResponse],
                                                         value: nil,
                                                         permissions: [.readable, .writeable])
+    
+    var playerNameCharacteristic = CBMutableCharacteristic(type: TransferService.nameCharacteristicUUID,
+                                                        properties: [.notify, .write, .read, .writeWithoutResponse],
+                                                        value: nil,
+                                                        permissions: [.readable, .writeable])
 
+    var chrSubscribedList: [CBUUID: CBCharacteristic] = [:]
+    var chrOriginalList: [CBUUID: CBMutableCharacteristic] = [:]
     
     // --- MAIN FUNCTIONS ---
     
-    override init(){
-        super.init()
-                
+    func initParameters(){
+        chrOriginalList = [
+            TransferService.characteristicUUID: transferCharacteristic,
+            TransferService.endGameCharacteristicUUID: endGameCharacteristic,
+            TransferService.nameCharacteristicUUID: playerNameCharacteristic
+        ]
+    }
+    
+    func createPTPSession(){
         // Create a unique identifier for the peer
         print("Creating peerID with name: \(UIDevice.current.name)")
         peerID = MCPeerID(displayName: UIDevice.current.name)
@@ -77,15 +96,24 @@ class ConnectionManager: NSObject{
     }
     
     func startWIFIRoom() {
+        createPTPSession()
         connectionType = TransferService.WIFI_OPTION
         playerType = TransferService.PERIPHERAL_PL
         ptpAdvertiser.startAdvertising(peerID, mcSession)
     }
     
     func joinWIFIRoom(){
+        createPTPSession()
         connectionType = TransferService.WIFI_OPTION
         playerType = TransferService.CENTRAL_PL
         ptpBrowser.startBrowse(peerID, mcSession)
+    }
+    
+    func ptpDisconnect() {
+        ptpBrowser.disconnect()
+        ptpAdvertiser.disconnect()
+        mcSession?.disconnect()
+        print("PTP - Disconnected from session")
     }
     
     func sendDataBLE(data : Data?, characteristicUUID: CBUUID){
@@ -94,17 +122,13 @@ class ConnectionManager: NSObject{
             return
         }
         
-        if(characteristicUUID == TransferService.characteristicUUID){
-            if(playerType == TransferService.CENTRAL_PL){
-                sendDataFromCentral(data: data!, characteristic: chrcSubscribed)
-            }else{
-                sendDataFromPeripheral(data: data!, characteristic: transferCharacteristic)
+        if(playerType == TransferService.CENTRAL_PL){
+            if let characteristicToWrite = chrSubscribedList[characteristicUUID] {
+                sendDataFromCentral(data: data!, characteristic: characteristicToWrite)
             }
-        }else if(characteristicUUID == TransferService.endGameCharacteristicUUID){
-            if(playerType == TransferService.CENTRAL_PL){
-                sendDataFromCentral(data: data!, characteristic: endGameChrcSubscribed)
-            }else{
-                sendDataFromPeripheral(data: data!, characteristic: endGameCharacteristic)
+        }else if(playerType == TransferService.PERIPHERAL_PL){
+            if let characteristicToWrite = chrOriginalList[characteristicUUID] {
+                sendDataFromPeripheral(data: data!, characteristic: characteristicToWrite)
             }
         }
     }
@@ -158,7 +182,7 @@ extension ConnectionManager: CBCentralManagerDelegate {
     // Peripheral connected --> Discover Services
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral){
         peripheral.discoverServices([TransferService.serviceUUID])
-        print ("Central - Connected with peripheral:" + peripheral.name!)
+        print ("Central - Connected with peripheral: " + peripheral.name!)
     }
 }
 
@@ -170,7 +194,7 @@ extension ConnectionManager: CBPeripheralDelegate{
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         for service in peripheral.services! {
             if service.uuid == TransferService.serviceUUID {
-                peripheral.discoverCharacteristics([TransferService.characteristicUUID, TransferService.endGameCharacteristicUUID], for: service)
+                peripheral.discoverCharacteristics(TransferService.uuidList, for: service)
                 print("Central - Found the service \(service) and looking for characteristics")
             }
         }
@@ -184,12 +208,29 @@ extension ConnectionManager: CBPeripheralDelegate{
                 chrcSubscribed = characteristic
                 print("Central - Found bullet characteristic")
             }
-            if characteristic.uuid == TransferService.endGameCharacteristicUUID {
+            else if characteristic.uuid == TransferService.endGameCharacteristicUUID {
                 peripheral.setNotifyValue(true, for: characteristic)
                 endGameChrcSubscribed = characteristic
                 print("Central - Found end game characteristic")
             }
+            else if characteristic.uuid == TransferService.nameCharacteristicUUID {
+                peripheral.setNotifyValue(true, for: characteristic)
+                nameChrcSubscribed = characteristic
+                print("Central - Found name characteristic")
+                
+                print("Central - sended playername: \(self.playerName)")
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.sendDataBLE(data : self.playerName.data(using: .utf8)!, characteristicUUID: TransferService.nameCharacteristicUUID)
+                }
+            }
         }
+        
+        chrSubscribedList = [
+            TransferService.characteristicUUID: chrcSubscribed,
+            TransferService.endGameCharacteristicUUID: endGameChrcSubscribed,
+            TransferService.nameCharacteristicUUID: nameChrcSubscribed
+        ]
     }
     
     // Found asked characteristic
@@ -209,6 +250,15 @@ extension ConnectionManager: CBPeripheralDelegate{
             if let data = characteristic.value, let message = String(data: data, encoding: .utf8), message == "Game Over" {
                 print("Game Over received")
                 endGameReceived?()
+            }
+        } else if characteristic.uuid == TransferService.nameCharacteristicUUID {
+            
+            print("Central - obtained name characteristic")
+            
+            if let data = characteristic.value, let name = String(data: data, encoding: .utf8) {
+                print("Enemy player name: \(name)")
+                enemyPlayerName = name
+                playerNameReceived?()
             }
         }
     }
@@ -239,7 +289,7 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
         let myService = CBMutableService(type: TransferService.serviceUUID, primary: true)
         
         // Add the characteristic to the service.
-        myService.characteristics = [transferCharacteristic, endGameCharacteristic]
+        myService.characteristics = [transferCharacteristic, endGameCharacteristic, playerNameCharacteristic]
         
         // And add it to the peripheral manager.
         peripheralManager.add(myService)
@@ -261,15 +311,19 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
     
     func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
         if let myError = error {
-            print( "Periférico: Error posting a service:" + myError.localizedDescription)
+            print( "Peripheral: Error posting a service:" + myError.localizedDescription)
         }
     }
     
     func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didSubscribeTo characteristic: CBCharacteristic) {
-        print("He encontrado central")
+        print("Peripheral - He encontrado central")
         if characteristic.uuid == TransferService.characteristicUUID {
             
             centralFound = central
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.sendDataBLE(data: self.playerName.data(using: .utf8), characteristicUUID: TransferService.nameCharacteristicUUID)
+            }
             
             // Starting game on peripheral
             onSuccessfulConnection?()
@@ -278,10 +332,10 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
     
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
         
-        print("Peripheral recibe data")
+        print("Peripheral - data received")
         
         for request in requests {
-            guard request.characteristic.uuid == TransferService.characteristicUUID || request.characteristic.uuid == TransferService.endGameCharacteristicUUID else {
+            guard TransferService.uuidList.contains(request.characteristic.uuid) else {
                 // Not the characteristic we want
                 peripheral.respond(to: request, withResult: .attributeNotFound)
                 continue
@@ -291,12 +345,16 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
                 // Obtain the new bullet information
                 if let value = request.value {
                     if let bullet = deserializeBullet(value) {
-                        print("Peripheral recibe bala en posicion \(String(describing: bullet.position))")
                         receiveBullet?(bullet)
                     }
                 }
             } else if let data = request.value, let message = String(data: data, encoding: .utf8), message == "Game Over" {
                 endGameReceived?()
+            } else if request.characteristic.uuid == TransferService.nameCharacteristicUUID {
+                if let data = request.value, let name = String(data: data, encoding: .utf8) {
+                    enemyPlayerName = name
+                    playerNameReceived?()
+                }
             }
         }
     }
@@ -306,30 +364,66 @@ extension ConnectionManager: CBPeripheralManagerDelegate {
     }
     
     func terminateConnection(){
-        if playerType == TransferService.CENTRAL_PL {
-            if let centralManager = centralManager, let peripheralFound = peripheralFound {
-                centralManager.cancelPeripheralConnection(peripheralFound)
+        if(connectionType == TransferService.BLE_OPTION){
+            if playerType == TransferService.CENTRAL_PL {
+                if let centralManager = centralManager, let peripheralFound = peripheralFound {
+                    centralManager.cancelPeripheralConnection(peripheralFound)
+                }
+            } else if playerType == TransferService.PERIPHERAL_PL {
+                if let peripheralManager = peripheralManager {
+                    peripheralManager.stopAdvertising()
+                }
             }
-        } else if playerType == TransferService.PERIPHERAL_PL {
-            if let peripheralManager = peripheralManager {
-                peripheralManager.stopAdvertising()
+        }else if(connectionType == TransferService.WIFI_OPTION){
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.ptpDisconnect()
             }
         }
     }
 }
+
+// ----------------------------------------------------------------------------------------------------------- //
+
+// ---- PTP ----
 
 extension ConnectionManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
             case .connected:
                 print("Connected: \(peerID.displayName)")
+                
+                // Send player name
+                sendPTPData(playerName.data(using: .utf8))
+            
+                print("PTP - Sended playername: \(playerName)")
+            
                 onSuccessfulConnection?()
             case .connecting:
                 print("Connecting: \(peerID.displayName)")
             case .notConnected:
                 print("Not Connected: \(peerID.displayName)")
+                
+                if session.connectedPeers.isEmpty && !gameFinished {
+                    print("Warning: All peers disconnected.")
+                    // Try to reconnect
+                    attemptReconnect()
+                }
+            
             @unknown default:
                 print("Unknown state received: \(peerID.displayName)")
+        }
+    }
+    
+    func attemptReconnect() {
+        if mcSession?.connectedPeers.isEmpty == true {
+            
+            print("Attempting to reconnect...")
+            
+            if(playerType == TransferService.PERIPHERAL_PL){
+                ptpAdvertiser.startAdvertising(peerID, mcSession)
+            }else{
+                ptpBrowser.startBrowse(peerID, mcSession)
+            }
         }
     }
     
@@ -338,6 +432,11 @@ extension ConnectionManager: MCSessionDelegate {
         if let bullet = deserializeBullet(data) {
             print("PTP - bullet at position \(String(describing: bullet.position))")
             receiveBullet?(bullet)
+        }else if let message = String(data: data, encoding: .utf8), message == "Game Over" {
+            gameFinished = true
+            endGameReceived?()
+        }else if let name = String(data: data, encoding: .utf8) {
+            print("PTP - player name: \(name)")
         }
     }
     
@@ -350,6 +449,8 @@ extension ConnectionManager: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-        
+        if let myError = error {
+            print( "PTP - Connection finished: " + myError.localizedDescription)
+        }
     }
 }

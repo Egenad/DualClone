@@ -26,11 +26,13 @@ class WelcomeController: UIViewController {
         createRoomButton.setBackgroundImage(UIImage(ciImage: .gray), for: .highlighted)
         joinRoomButton.setBackgroundImage(UIImage(ciImage: .gray), for: .highlighted)
         
-        ConnectionManager.instance.onSuccessfulConnection = {
+        connectionManager.onSuccessfulConnection = {
             DispatchQueue.main.async {
                 self.startGame()
             }
         }
+        
+        connectionManager.initParameters()
         
         spinner.hidesWhenStopped = true
         spinner.color = UIColor.green
@@ -47,41 +49,58 @@ class WelcomeController: UIViewController {
     }
     
     @IBAction func createRoom(_ sender: Any) {
-        if(hasName()){
+        
+        guard hasName() else{
+            showAlert(title: NSLocalizedString("empty_title", comment: ""), message: NSLocalizedString("empty", comment: ""))
+            return
+        }
+        
+        guard isValidName() else{
+            showAlert(title: NSLocalizedString("title_not_valid", comment: ""), message: NSLocalizedString("not_valid", comment: ""))
+            return
+        }
             
-            searchHUD()
-            
-            switch connectionType.selectedSegmentIndex {
-                case TransferService.BLE_OPTION:
-                    connectionManager.startBLERoom()
-                    break
-                case TransferService.WIFI_OPTION:
-                    connectionManager.startWIFIRoom()
-                    break
-                default:
-                    // Nothing
-                    break
-            }
+        searchHUD()
+        connectionManager.playerName = nickNameField!.text!
+        
+        switch connectionType.selectedSegmentIndex {
+            case TransferService.BLE_OPTION:
+                connectionManager.startBLERoom()
+                break
+            case TransferService.WIFI_OPTION:
+                connectionManager.startWIFIRoom()
+                break
+            default:
+                // Nothing
+                break
         }
     }
     
     @IBAction func joinRoom(_ sender: Any) {
         
-        if(hasName()){
+        guard hasName() else{
+            showAlert(title: NSLocalizedString("empty_title", comment: ""), message: NSLocalizedString("empty", comment: ""))
+            return
+        }
+        
+        guard isValidName() else{
+            showAlert(title: NSLocalizedString("title_not_valid", comment: ""), message: NSLocalizedString("not_valid", comment: ""))
+            return
+        }
             
-            searchHUD()
-            
-            switch connectionType.selectedSegmentIndex {
-                case TransferService.BLE_OPTION:
-                    connectionManager.joinBLERoom()
-                    break
-                case TransferService.WIFI_OPTION:
-                    connectionManager.joinWIFIRoom()
-                    break
-                default:
-                    // Nothing
-                    break
-            }
+        searchHUD()
+        connectionManager.playerName = nickNameField!.text!
+        
+        switch connectionType.selectedSegmentIndex {
+            case TransferService.BLE_OPTION:
+                connectionManager.joinBLERoom()
+                break
+            case TransferService.WIFI_OPTION:
+                connectionManager.joinWIFIRoom()
+                break
+            default:
+                // Nothing
+                break
         }
     }
     
@@ -104,7 +123,17 @@ class WelcomeController: UIViewController {
         return true
     }
     
+    private func isValidName() -> Bool {
+        
+        let nickname = nickNameField.text
+        
+        let regex = "^[a-zA-Z0-9_]{1,20}$"
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        return predicate.evaluate(with: nickname)
+    }
+    
     private func startGame(){
+        connectionManager.gameFinished = false
         spinner.stopAnimating()
         enableButtons(enabled: true)
         performSegue(withIdentifier: "GameScene", sender: self)

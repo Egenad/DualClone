@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  DualClone
+
+  Created by Angel Terol on 1/6/24.
+  
+*/
+
+"not_valid" = "The nickname is not valid. Please use only letters, numbers, and underscores, and ensure it does not exceed 20 characters.";
+"title_not_valid" = "Nickname not valid";
+"empty" = "The nickname can't be empty, please ensure you provide one.";
+"empty_title" = "Please provide a nickname";

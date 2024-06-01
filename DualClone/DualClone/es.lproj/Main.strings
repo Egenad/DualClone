@@ -1,0 +1,30 @@
+
+/* Class = "UILabel"; text = "Connection"; ObjectID = "9YR-rp-hbj"; */
+"9YR-rp-hbj.text" = "Connection";
+
+/* Class = "UIButton"; configuration.title = "Join Room"; ObjectID = "LTs-6o-cE7"; */
+"LTs-6o-cE7.configuration.title" = "Join Room";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "LTs-6o-cE7"; */
+"LTs-6o-cE7.normalTitle" = "Button";
+
+/* Class = "UITextField"; placeholder = "Example: Neo, Mike, Klea..."; ObjectID = "cVu-iK-nss"; */
+"cVu-iK-nss.placeholder" = "Example: Neo, Mike, Klea...";
+
+/* Class = "UIButton"; configuration.title = "Create Room"; ObjectID = "dt1-t1-rgP"; */
+"dt1-t1-rgP.configuration.title" = "Create Room";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "dt1-t1-rgP"; */
+"dt1-t1-rgP.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Nickname"; ObjectID = "jDn-xq-C4I"; */
+"jDn-xq-C4I.text" = "Nickname";
+
+/* Class = "UISegmentedControl"; kQR-AB-h3w.segmentTitles[0] = "BLE"; ObjectID = "kQR-AB-h3w"; */
+"kQR-AB-h3w.segmentTitles[0]" = "BLE";
+
+/* Class = "UISegmentedControl"; kQR-AB-h3w.segmentTitles[1] = "WIFI"; ObjectID = "kQR-AB-h3w"; */
+"kQR-AB-h3w.segmentTitles[1]" = "WIFI";
+
+/* Class = "UILabel"; text = "DualClone"; ObjectID = "wa0-UF-O74"; */
+"wa0-UF-O74.text" = "DualClone";

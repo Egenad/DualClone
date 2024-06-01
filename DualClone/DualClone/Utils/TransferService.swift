@@ -17,4 +17,6 @@ struct TransferService {
     static let WIFI_OPTION = 1
     static let CENTRAL_PL = 0
     static let PERIPHERAL_PL = 1
+    
+    static let uuidList = [characteristicUUID, endGameCharacteristicUUID, nameCharacteristicUUID]
 }
