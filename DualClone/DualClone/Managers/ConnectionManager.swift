@@ -438,19 +438,6 @@ extension ConnectionManager: MCSessionDelegate {
         } catch {
             print("Error recibiendo el mensaje: \(error.localizedDescription)")
         }
-        
-        print("Received PTP data: \(data)")
-        /*if let bullet = deserializeBullet(data) {
-            print("PTP - bullet at position \(String(describing: bullet.position))")
-            receiveBullet?(bullet)
-        }else if let message = String(data: data, encoding: .utf8), message == "Game Over" {
-            gameFinished = true
-            endGameReceived?()
-        }else if let name = String(data: data, encoding: .utf8) {
-            print("PTP - player name: \(name)")
-            self.enemyPlayerName = name
-            playerNameReceived?()
-        }*/
     }
     
     private func handleReceivedMessage(_ message: PTPMessage){
