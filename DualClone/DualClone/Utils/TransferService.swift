@@ -20,3 +20,14 @@ struct TransferService {
     
     static let uuidList = [characteristicUUID, endGameCharacteristicUUID, nameCharacteristicUUID]
 }
+
+enum PTPMessageType: String, Codable {
+    case gameOver
+    case bullet
+    case playerName
+}
+
+struct PTPMessage: Codable {
+    let type: PTPMessageType
+    let content: Data?
+}

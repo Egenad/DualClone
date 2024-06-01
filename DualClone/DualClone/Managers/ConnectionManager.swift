@@ -133,15 +133,16 @@ class ConnectionManager: NSObject{
         }
     }
     
-    func sendPTPData(_ data: Data?) {
+    func sendPTPData(_ msg: PTPMessage?) {
         
-        guard data != nil else{
+        guard msg != nil else{
             return
         }
         
         if mcSession.connectedPeers.count > 0 {
             do {
-                try mcSession.send(data!, toPeers: mcSession.connectedPeers, with: .reliable)
+                let data = try JSONEncoder().encode(msg)
+                try mcSession.send(data, toPeers: mcSession.connectedPeers, with: .reliable)
             } catch let error {
                 print("Error sending data: \(error.localizedDescription)")
             }
@@ -393,7 +394,9 @@ extension ConnectionManager: MCSessionDelegate {
                 print("Connected: \(peerID.displayName)")
                 
                 // Send player name
-                sendPTPData(playerName.data(using: .utf8))
+            let nameMessage = PTPMessage(type: .playerName, content: playerName.data(using: .utf8))
+            
+                sendPTPData(nameMessage)
             
                 print("PTP - Sended playername: \(playerName)")
             
@@ -428,8 +431,16 @@ extension ConnectionManager: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        
+        do {
+            let message = try JSONDecoder().decode(PTPMessage.self, from: data)
+            handleReceivedMessage(message)
+        } catch {
+            print("Error recibiendo el mensaje: \(error.localizedDescription)")
+        }
+        
         print("Received PTP data: \(data)")
-        if let bullet = deserializeBullet(data) {
+        /*if let bullet = deserializeBullet(data) {
             print("PTP - bullet at position \(String(describing: bullet.position))")
             receiveBullet?(bullet)
         }else if let message = String(data: data, encoding: .utf8), message == "Game Over" {
@@ -437,6 +448,33 @@ extension ConnectionManager: MCSessionDelegate {
             endGameReceived?()
         }else if let name = String(data: data, encoding: .utf8) {
             print("PTP - player name: \(name)")
+            self.enemyPlayerName = name
+            playerNameReceived?()
+        }*/
+    }
+    
+    private func handleReceivedMessage(_ message: PTPMessage){
+        if let content = message.content {
+            switch message.type {
+                case .gameOver:
+                    if let message = String(data: content, encoding: .utf8), message == "Game Over" {
+                        gameFinished = true
+                        endGameReceived?()
+                    }
+                case .bullet:
+                    if let bullet = deserializeBullet(content) {
+                        print("PTP - bullet at position \(String(describing: bullet.position))")
+                        receiveBullet?(bullet)
+                    }
+                case .playerName:
+                    if let name = String(data: content, encoding: .utf8) {
+                        print("PTP - player name: \(name)")
+                        self.enemyPlayerName = name
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self.playerNameReceived?()
+                        }
+                    }
+            }
         }
     }
     

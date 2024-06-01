@@ -58,6 +58,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let label = childNode(withName: "VS") as? SKLabelNode {
             vsLabel = label
             vsLabel?.position.x = (-self.size.width / 2) + (hpLabel?.frame.width ?? 0) + 70
+            
+            if !connectionManager.enemyPlayerName.elementsEqual(""){
+                updateEnemyName()
+            }
         }
     }
     
@@ -117,7 +121,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             connectionManager.sendDataBLE(data: serializeBullet(bulletStruct), characteristicUUID: TransferService.characteristicUUID)
         }else{
             // Send bullet peer to peer
-            connectionManager.sendPTPData(serializeBullet(bulletStruct))
+            let bulletMSG = PTPMessage(type: .bullet, content: serializeBullet(bulletStruct))
+            connectionManager.sendPTPData(bulletMSG)
         }
     }
     

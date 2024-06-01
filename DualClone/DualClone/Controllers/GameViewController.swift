@@ -83,7 +83,8 @@ class GameViewController: UIViewController, GameSceneDelegate {
             // Send game over via bluetooth
             connectionManager.sendDataBLE(data: "Game Over".data(using: .utf8)!, characteristicUUID: TransferService.endGameCharacteristicUUID)
         }else if(connectionManager.connectionType == TransferService.WIFI_OPTION){
-            connectionManager.sendPTPData("Game Over".data(using: .utf8)!)
+            let goMSG = PTPMessage(type: .gameOver, content: "Game Over".data(using: .utf8)!)
+            connectionManager.sendPTPData(goMSG)
         }
         
         connectionManager.terminateConnection()
