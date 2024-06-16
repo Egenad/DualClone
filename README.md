@@ -34,3 +34,9 @@ Me costó mucho entender cómo funcionaba la comunicación entre dispositivos. P
 
 ### Gestión de desconexiones:
 Un problema recurrente que tuve en la parte de Peer to Peer fue que, al quedarse inactivo durante unos segundos el iPad, la conexión se perdía y ya no se podía seguir jugando. Conseguí solucionarlo en el método didChange de la sesión, cuando me indicara que se había producido un estado de .notConnected y además los existiesen peers conectados, intentando restablecer la conexión en ese instante (a no ser que yo haya indicado que la partida se ha terminado y la conexión, por tanto, finalizado voluntariamente).
+
+## DEMO
+
+(Esta demo se ha grabado utilizando la versión extendida de la práctica final):
+
+[![DualClone DEMO](https://img.youtube.com/vi/iytsRvBKWtQ/0.jpg)](https://www.youtube.com/watch?v=iytsRvBKWtQ)
